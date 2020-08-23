@@ -23,6 +23,8 @@ public class OracleMessageDAO extends MessageDAO{
 			pstmt.setString(1, message.getGuestName());
 			pstmt.setString(2, message.getPassword());
 			pstmt.setString(3, message.getMessage());
+			
+			
 			return pstmt.executeUpdate();
 		}
 		finally {
@@ -37,8 +39,11 @@ public class OracleMessageDAO extends MessageDAO{
 		ResultSet rs = null;
 		
 		try {
-			pstmt = conn.prepareStatement("SELECT * FROM guestbook_message " + 
-										" WHERE rownum >= ? and rownum <= ?");
+			
+			
+			pstmt = conn.prepareStatement("SELECT message_id, guest_name, password, message FROM " + 
+					"(select rownum rnum, message_id, guest_name, password, message from guestbook_message order by message_id asc) " + 
+					"WHERE rnum between ? and ?");
 			pstmt.setInt(1,  firstRow);
 			pstmt.setInt(2, endRow);
 			
@@ -61,6 +66,8 @@ public class OracleMessageDAO extends MessageDAO{
 		}
 		
 	}
+	
+	
 	
 	
 }
